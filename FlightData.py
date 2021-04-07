@@ -96,11 +96,11 @@ class FlightData():
     
     def get_pressures(self):
         """ Returns a list of floats corresponding to the pressure readings\
-            from the FlightData object in Pascals
+            from the FlightData object in hectopascals
 
         """
         
-        pressures = [float(i) * 100 for i in self.dataframe['Pressure (hPa)']]
+        pressures = [float(i) / 100 for i in self.dataframe['Pressure (hPa)']]
         return pressures
     
     @staticmethod
