@@ -3,6 +3,10 @@
 This repository contains two python scripts: FlightData.py and mavlogdump.py.
 The mavlogdump.py script does not need to be used by the user.
 It does however need to be in the same directory (folder) as the FlightData.py script if .BIN files will be converted.
+These classes can be used in a separate .py file by importing them
+```python
+from FlightData import FlightData, Profile
+```
 
 ## Flight Data class
 
