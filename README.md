@@ -99,6 +99,12 @@ for flightNum, start_time, end_time in zip(FlightNums, start_times, end_times):
 	profiles.append(Profile(flightNum))
 ```
 
+Now that there is a list of Profile objects, we can plot them by simply calling
+```python
+Profile.plot_profile(profiles)
+```
+
+
 
 
 
