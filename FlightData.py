@@ -322,7 +322,7 @@ class Profile():
         
         #assigning data lists with columns from the dataframe
         altitude_list = data.get_altitudes()
-        avg_ppm_list = data.get_avgCO2_with_Offset()
+        self.avg_ppm_list = data.get_avgCO2_with_Offset()
         temp1_list, temp2_list = data.get_temperatures()
         pressure_list = data.get_pressures()
         
@@ -417,13 +417,13 @@ class Profile():
         #parsing the ppms
         if(self.useLinearRegression == True):
             initial_pressure = pressure_list[0]
-            offset = avg_ppm_list[0] - Profile.lRegression(initial_pressure, 0)
+            offset = self.avg_ppm_list[0] - Profile.lRegression(initial_pressure, 0)
             
             pivot = Profile.lRegression(initial_pressure, offset)
-            avg_ppm_list = [ppm + (pivot - Profile.lRegression(pressure, offset)) for ppm, pressure in zip(avg_ppm_list, pressure_list)]
+            self.avg_ppm_list = [ppm + (pivot - Profile.lRegression(pressure, offset)) for ppm, pressure in zip(self.avg_ppm_list, pressure_list)]
         
         elif(self.useLiCorrection == True):
-            avg_ppm_list = [Profile.li_correction(c, T, p) for c, T, p in zip(avg_ppm_list, temp1_list, pressure_list)]
+            self.avg_ppm_list = [Profile.li_correction(c, T, p) for c, T, p in zip(self.avg_ppm_list, temp1_list, pressure_list)]
         
         ppms_at_height = {}
         temps_at_height = {}
@@ -431,7 +431,7 @@ class Profile():
             ppms_at_height[f'ppms_at{str(height)}'] = []
             temps_at_height[f'temps_at_{str(height)}'] = [] 
   
-        for ppm, altitude, temp in zip(avg_ppm_list, altitude_list, temp1_list):
+        for ppm, altitude, temp in zip(self.avg_ppm_list, altitude_list, temp1_list):
             for height in self.heights:
                 if altitude > height-10 and altitude < height+10:
                     ppms_at_height[f'ppms_at{str(height)}'].append(ppm)
@@ -476,6 +476,14 @@ class Profile():
         """
         heights = self.heights[:]
         return heights
+    
+    def get_corrected_ppm_values(self):
+        """
+        Returns a list containing corrected ppm values using the Profile's correction
+        """
+        
+        corrected_ppms = self.avg_ppm_list[:]
+        return corrected_ppms
     
     def get_avg_ppm_at_heights(self):
         """ Returns a list of the average ppm readings for each altitude step
