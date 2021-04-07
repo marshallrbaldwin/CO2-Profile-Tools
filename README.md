@@ -36,4 +36,28 @@ These timestamps are non-inclusive.
 
 A Flight Data object is a pandas dataframe that reads in data from the ALL csv. 
 Note that all of the data in the dataframe is of type str. 
-For this reason, there are a number of "get" methods 
+For this reason, there are a number of "get" methods that return a list of a column of data in the Flight Data object in the correct format. 
+The timestamps will be converted into datetime objects in UTC time. CO<sub>2</sub> data should be accessed with
+```python
+data.get_avgCO2_with_Offset()
+```
+which will return the average CO2 reading between the two sensors after the offsets have been applied to them.
+Pressure data will be converted into Pascals when accessed with
+```python
+data.get_pressures()
+```
+Use these getter methods if you want to do your own post-processing.
+
+## Profile Class
+
+This class takes data from a FlightData object and processes it, applying a sensor correction and 
+
+
+
+
+
+
+
+
+
+
