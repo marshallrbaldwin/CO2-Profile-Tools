@@ -2,7 +2,7 @@
 
 This repository contains two python scripts: FlightData.py and mavlogdump.py.
 The mavlogdump.py script does not need to be used by the user.
-It does however need to be in the same directory (folder) as the FlightData.py if .BIN files will be converted.
+It does however need to be in the same directory (folder) as the FlightData.py script if .BIN files will be converted.
 
 ## Flight Data class
 
@@ -103,6 +103,12 @@ Now that there is a list of Profile objects, we can plot them by simply calling
 ```python
 Profile.plot_profile(profiles)
 ```
+There is also a scatterplot option
+```python
+Profile.plot_profile(profiles)
+```
+Both of these plotting methods have keywork arguments that are documented in docstrings.
+These include plot height and width, label sizes, and marker design.
 
 
 

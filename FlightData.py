@@ -321,7 +321,7 @@ class Profile():
         data = FlightData(trimmedFilePath)
         
         #assigning data lists with columns from the dataframe
-        altitude_list = data.get_altitudes()
+        self.altitude_list = data.get_altitudes()
         self.avg_ppm_list = data.get_avgCO2_with_Offset()
         temp1_list, temp2_list = data.get_temperatures()
         pressure_list = data.get_pressures()
@@ -431,7 +431,7 @@ class Profile():
             ppms_at_height[f'ppms_at{str(height)}'] = []
             temps_at_height[f'temps_at_{str(height)}'] = [] 
   
-        for ppm, altitude, temp in zip(self.avg_ppm_list, altitude_list, temp1_list):
+        for ppm, altitude, temp in zip(self.avg_ppm_list, self.altitude_list, temp1_list):
             for height in self.heights:
                 if altitude > height-10 and altitude < height+10:
                     ppms_at_height[f'ppms_at{str(height)}'].append(ppm)
@@ -537,8 +537,9 @@ class Profile():
     
       
     @staticmethod
-    def plot_profile(flights, profile_type = "CO2", width = 7, height = 10, 
-                         xlabel_size = 14, ylabel_size = 14):
+    def plot_profile(flights, profile_type = "CO2", width = 7,
+                     height = 10, xlabel_size = 14, ylabel_size = 14,
+                     capsize = 6, marker = "D"):
         """ Creates a plot of the profile for a flight day.
         
         :param list<Profile> flights: List of Profile objects\n
@@ -553,7 +554,7 @@ class Profile():
             fig, axs = plt.subplots(figsize=(width,height))
             for flight in flights:
                 axs.errorbar(flight.avg_ppm_at_height, flight.heights, 
-                     xerr=flight.ppm_at_height_stdev, capsize=6, marker="D", 
+                     xerr=flight.ppm_at_height_stdev, capsize=capsize, marker=marker, 
                      label=f'Starting at {flight.start_time}')
                 
             axs.set_xlabel('CO2 ppm', fontsize=xlabel_size)
@@ -573,4 +574,33 @@ class Profile():
             axs.legend()
             axs.grid()
             axs.plot()            
+    
+    @staticmethod
+    def plot_scatter_profile(flights, profile_type = "CO2", width = 7,
+                             height = 10, xlabel_size = 14, ylabel_size = 14,
+                             marker = 'o', marker_size = 2):
+        
+        if profile_type == "CO2":
+            fig, axs = plt.subplots(figsize=(width,height))
+            for flight in flights:
+                axs.scatter(flight.avg_ppm_list, flight.altitude_list,
+                            marker = marker, s = marker_size,
+                            label=f'Starting at {flight.start_time}')
+                
+            axs.set_xlabel('CO2 ppm', fontsize=xlabel_size)
+            axs.set_ylabel('Altitude (in meters)', fontsize=ylabel_size)
+            axs.legend()
+            axs.grid()
+            axs.plot()
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
