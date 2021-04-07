@@ -37,7 +37,11 @@ These timestamps are non-inclusive.
 A Flight Data object is a pandas dataframe that reads in data from the ALL csv. 
 Note that all of the data in the dataframe is of type str. 
 For this reason, there are a number of "get" methods that return a list of a column of data in the Flight Data object in the correct format. 
-The timestamps will be converted into datetime objects in UTC time. CO<sub>2</sub> data should be accessed with
+The timestamps will be converted into datetime objects in UTC time with
+```python
+data.get_UTC_times()
+```
+CO<sub>2</sub> data should be accessed with
 ```python
 data.get_avgCO2_with_Offset()
 ```
@@ -46,11 +50,32 @@ Pressure data will be converted into Pascals when accessed with
 ```python
 data.get_pressures()
 ```
+The other getter methods
+```python
+data.get_altitudes()
+data.get_temperatures()
+```
+just convert the data to floats.
+
 Use these getter methods if you want to do your own post-processing.
 
 ## Profile Class
 
-This class takes data from a FlightData object and processes it, applying a sensor correction and 
+This class takes data from a FlightData object and processes it, applying a sensor correction and averaging data at user-supplied steps of altitude.
+
+### Initializing a Profile Object
+
+A profile object can be constructed with
+```python
+Profile(flightNum)
+```
+with optional arguments for correction and userHeightInput.
+The correction parameter is set to "Linear" by default but will also accept "Li" and "None" as arguments.
+The userHeightInput is set to a False boolean value by default.
+This parameter controls whether the user needs to supply each "step" in the flight manually or lets the code generate steps will constant distance in between.
+The user will be prompted for information when needed.
+
+
 
 
 
