@@ -100,7 +100,7 @@ class FlightData():
 
         """
         
-        pressures = [float(i)/100 for i in self.dataframe['Pressure (hPa)']]
+        pressures = [float(i) * 100 for i in self.dataframe['Pressure (hPa)']]
         return pressures
     
     @staticmethod
