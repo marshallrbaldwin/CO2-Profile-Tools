@@ -75,11 +75,29 @@ The userHeightInput is set to a False boolean value by default.
 This parameter controls whether the user needs to supply each "step" in the flight manually or lets the code generate steps will constant distance in between.
 The user will be prompted for information when needed.
 
+### Plotting Profiles
 
+Starting from just binary files, the workflow for generating Profile objects should look something like
 
+```python
+flightNums = [1,2,3,4,5]
 
+#these should be timestamps
+start_times = [1,2,3,4,5]
+end_times = [1,2,3,4,5]
 
+profiles = []
 
+for flightNum, start_time, end_time in zip(FlightNums, start_times, end_times):
+	
+	#create an appropriate CSV file for the flight
+	FlightData.convert_BIN_to_CSV(flightNum)
+	FlightData.generate_ALL_CSV(flightNum)
+	FlightData.trim_ALL_CSV(flightNum)
+	
+	#create new Profile object for each flight
+	profiles.append(Profile(flightNum))
+```
 
 
 
