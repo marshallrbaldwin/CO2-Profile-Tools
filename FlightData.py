@@ -112,7 +112,7 @@ class FlightData():
 
         """
 
-        lang = "py "
+        lang = "python "
         script = "mavlogdump.py "
         keywords = ["--types ", "--format "]
         fileType = "csv "
