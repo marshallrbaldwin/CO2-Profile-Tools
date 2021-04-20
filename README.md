@@ -8,6 +8,12 @@ These classes can be used in a separate .py file by importing them
 from FlightData import FlightData, Profile
 ```
 
+## Requirements
+Python will need to be configured to work with your operating system's command line. 
+In Windows, this can be done by adding python to the Path environment variable.
+The mavlogdump.py script also has a dependency on the pymavlink library.
+This can be pip installed.
+
 ## Flight Data class
 
 This class reads in raw data from an ALL csv file and stores it in a Pandas dataframe. 
