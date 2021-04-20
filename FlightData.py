@@ -31,6 +31,7 @@ class FlightData():
         :param str csvFilePath: file path to the ALL csv
         
         """
+        #TODO: Add the other two temperature streams from the ALL csv
         self.dataframe = pd.read_csv(csvFilePath, skiprows=1, names=['TimeStampUTC (ms)',
                                                                      'Altitude (m)',
                                                                      'Pressure (hPa)',
@@ -83,7 +84,8 @@ class FlightData():
         CO2_ppm2 = [float(i) for i in self.dataframe['CO2_2 (ppm)']]
         avgCO2 = [((i+self.CO2_sensor1_offset)+(j+self.CO2_sensor2_offset))/2 for i,j in zip(CO2_ppm1, CO2_ppm2)]
         return avgCO2
-        
+    
+    #TODO: Determine which temperature sensors correspond to what temperature reading    
     def get_temperatures(self):
         """ Returns two lists of floats -- temperature1, temperature2 -- that\
             correspond to readings from temperature sensors in the\
@@ -136,7 +138,8 @@ class FlightData():
         """
         ALL_dataframe = pd.DataFrame(columns = ["Timestamp", "Altitude", "Pressure",
                                                 "CO2 ppm 1", "CO2 ppm 2", "Temperature 1",
-                                                "Temperature 2"])
+                                                "Temperature 2", "Temperature 3",
+                                                "Temperature 4"])
         
         #these will be added to the all dataframe as columns
         timestamp_list = []
@@ -144,6 +147,8 @@ class FlightData():
         CO2_ppm2_list = []
         temp1_list = []
         temp2_list = []
+        temp3_list = []
+        temp4_list = []
         altitude_list = []
         pressure_list = []
         
@@ -172,9 +177,11 @@ class FlightData():
             ppm2_temp = []
             temp1_temp = [] #I know, I know... the naming scheme is sketch
             temp2_temp = []
+            temp3_temp = []
+            temp4_temp = []
             
             #check whether the next timestamp is the same as the current one
-            while (CO2_index + 1 < len(CO2_time)):
+            while (CO2_index + 1 < len(CO2_time) and CO2_index + 1 < len(RH_TEMP_dataframe["T1"])):
                 if(CO2_time[CO2_index] == CO2_time[CO2_index+1]):
                     time_bucket.append(CO2_index + 1)
                     CO2_index += 1
@@ -193,8 +200,10 @@ class FlightData():
                     
                     ppm1_temp.append(CO2_dataframe["co2Val0"][index])
                     ppm2_temp.append(CO2_dataframe[" co2Val1"][index]) #note that this name has a random space in front >:(
-                    temp1_temp.append(RH_TEMP_dataframe["Temp1"][index])
-                    temp2_temp.append(RH_TEMP_dataframe["Temp2"][index])
+                    temp1_temp.append(RH_TEMP_dataframe["T1"][index])
+                    temp2_temp.append(RH_TEMP_dataframe["T2"][index])
+                    temp3_temp.append(RH_TEMP_dataframe["T3"][index])
+                    temp4_temp.append(RH_TEMP_dataframe["T4"][index])
                     
                 else:
                     bad_data_counter += 1
@@ -206,12 +215,13 @@ class FlightData():
                 CO2_ppm2_list.append(sum(ppm2_temp)/len(ppm2_temp))
                 temp1_list.append(sum(temp1_temp)/len(temp1_temp))
                 temp2_list.append(sum(temp2_temp)/len(temp2_temp))
-                
+                temp3_list.append(sum(temp3_temp)/len(temp3_temp))
+                temp4_list.append(sum(temp4_temp)/len(temp4_temp))
             #emptying the bin
             time_bucket = []
             
             #escape the loop if there are no more future elements to compare
-            if(CO2_index +1 >= len(CO2_time)):
+            if(CO2_index +1 >= len(CO2_time) or CO2_index + 1 == len(RH_TEMP_dataframe["T1"])):
                 break
         
         #add the lists as columns of the ALL dataframe
@@ -220,7 +230,8 @@ class FlightData():
         ALL_dataframe["CO2 ppm 2"] = CO2_ppm2_list
         ALL_dataframe["Temperature 1"] = temp1_list
         ALL_dataframe["Temperature 2"] =  temp2_list
-        
+        ALL_dataframe["Temperature 3"] = temp3_list
+        ALL_dataframe["Temperature 4"] =  temp4_list
         
         ALT_index = 0
         CO2_index = 0 #again, doubles for RH_TEMP index
@@ -258,7 +269,8 @@ class FlightData():
         ALL_dataframe["Pressure"] = pressure_list
         
             
-        ALL_dataframe.to_csv(f"0000000{flightNum}ALL.csv", index=False)        
+        ALL_dataframe.to_csv(f"0000000{flightNum}ALL.csv", index=False)
+        print(f"ALL csv number {str(flightNum)} has been generated")        
     
     @staticmethod
     def trimArduPlaneCSV(base_filename, fixed_filename, start_time, end_time):
