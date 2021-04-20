@@ -168,6 +168,8 @@ class FlightData():
         
         CO2_index = 0
         
+        ENV_DATA_SIZE = min(len(RH_TEMP_dataframe["T1"]),len(ALT_dataframe["Alt"]))
+        
         while (CO2_index<len(CO2_time)):
             
             time_bucket = [CO2_index]
@@ -181,7 +183,7 @@ class FlightData():
             temp4_temp = []
             
             #check whether the next timestamp is the same as the current one
-            while (CO2_index + 1 < len(CO2_time) and CO2_index + 1 < len(RH_TEMP_dataframe["T1"])):
+            while (CO2_index + 1 < len(CO2_time) and CO2_index + 1 < ENV_DATA_SIZE):
                 if(CO2_time[CO2_index] == CO2_time[CO2_index+1]):
                     time_bucket.append(CO2_index + 1)
                     CO2_index += 1
@@ -221,7 +223,7 @@ class FlightData():
             time_bucket = []
             
             #escape the loop if there are no more future elements to compare
-            if(CO2_index +1 >= len(CO2_time) or CO2_index + 1 == len(RH_TEMP_dataframe["T1"])):
+            if(CO2_index +1 >= len(CO2_time) or CO2_index + 1 == ENV_DATA_SIZE):
                 break
         
         #add the lists as columns of the ALL dataframe
