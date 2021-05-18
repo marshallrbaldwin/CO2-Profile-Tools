@@ -115,7 +115,7 @@ Profile.plot_profile(profiles)
 ```
 There is also a scatterplot option
 ```python
-Profile.plot_profile(profiles)
+Profile.plot_scatter_profile(profiles)
 ```
 Both of these plotting methods have keywork arguments that are documented in docstrings.
 These include plot height and width, label sizes, and marker design.
