@@ -124,10 +124,10 @@ class FlightData():
         
         for data,typeLabel in zip(typelist,typeNames):
             chunk1 = lang + script + keywords[0] + data + keywords[1] + fileType
-            chunk2 = f"0000000{str(flightNum)}.BIN > 0000000{str(flightNum)}" + typeLabel + ".csv"
+            chunk2 = f"{str(flightNum).zfill(8)}.BIN > {str(flightNum).zfill(8)}" + typeLabel + ".csv"
             command = chunk1 + chunk2
             os.system(command)
-            print(f"0000000{str(flightNum)}" + typeLabel + ".csv has been generated")
+            print(f"{str(flightNum).zfill(8)}" + typeLabel + ".csv has been generated")
         
     @staticmethod
     def generate_ALL_CSV(flightNum):
@@ -153,9 +153,9 @@ class FlightData():
         pressure_list = []
         
         #reading in the data
-        ALT_filename = f'0000000{flightNum}ALT.csv'
-        CO2_filename = f'0000000{flightNum}CO2.csv'
-        RH_TEMP_filename = f'0000000{flightNum}RH_TEMP.csv'
+        ALT_filename = f'{str(flightNum).zfill(8)}ALT.csv'
+        CO2_filename = f'{str(flightNum).zfill(8)}CO2.csv'
+        RH_TEMP_filename = f'{str(flightNum).zfill(8)}RH_TEMP.csv'
         
         ALT_dataframe = pd.read_csv(ALT_filename)
         CO2_dataframe = pd.read_csv(CO2_filename)
@@ -271,7 +271,7 @@ class FlightData():
         ALL_dataframe["Pressure"] = pressure_list
         
             
-        ALL_dataframe.to_csv(f"0000000{flightNum}ALL.csv", index=False)
+        ALL_dataframe.to_csv(f"{str(flightNum).zfill(8)}ALL.csv", index=False)
         print(f"ALL csv number {str(flightNum)} has been generated")        
     
     @staticmethod
@@ -303,8 +303,8 @@ class FlightData():
         :param int start_time: timestamp to start recording values
         :param int end_time: timestamp to stop recording values
         """
-        base_filename = f"0000000{flightNum}ALL.csv"
-        trimmed_filename = f"0000000{flightNum}ALL_TRIMMED.csv"
+        base_filename = f"{str(flightNum).zfill(8)}ALL.csv"
+        trimmed_filename = f"{str(flightNum).zfill(8)}ALL_TRIMMED.csv"
         FlightData.trimArduPlaneCSV(base_filename, trimmed_filename, start_time, end_time)
         
 class Profile():
@@ -331,7 +331,7 @@ class Profile():
         self.flightNum = flightNum
         
         #reading in a trimmed ALL csv
-        trimmedFilePath = f"0000000{flightNum}ALL_TRIMMED.csv"
+        trimmedFilePath = f"{str(flightNum).zfill(8)}ALL_TRIMMED.csv"
         data = FlightData(trimmedFilePath)
         
         #assigning data lists with columns from the dataframe
@@ -373,6 +373,7 @@ class Profile():
                     continue
                 else:
                     self.heights.append(height)
+                    userInput = input(prompt1 + prompt2)
         else:
             prompt = "Please enter the lowest height (this is usually around 35)\n"
             
