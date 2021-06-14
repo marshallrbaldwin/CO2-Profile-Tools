@@ -54,6 +54,8 @@ data.get_UTC_times()
 CO<sub>2</sub> data should be accessed with
 ```python
 data.get_avgCO2_with_Offset()
+#or
+data.get_corrected_avgCO2()
 ```
 which will return the average CO2 reading between the two sensors after the offsets have been applied to them.
 Pressure data will be converted into Pascals when accessed with
