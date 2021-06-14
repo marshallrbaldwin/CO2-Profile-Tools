@@ -31,15 +31,21 @@ class FlightData():
         :param str csvFilePath: file path to the ALL csv
         
         """
-        #TODO: Add the other two temperature streams from the ALL csv
+        
+        
         self.dataframe = pd.read_csv(csvFilePath, skiprows=1, names=['TimeStampUTC (ms)',
                                                                      'Altitude (m)',
                                                                      'Pressure (hPa)',
                                                                      'CO2_1 (ppm)',
                                                                      'CO2_2 (ppm)',
                                                                      'TEMP1 (K)',
-                                                                     'TEMP2 (K)'
+                                                                     'TEMP2 (K)',
+                                                                     'TEMP3 (K)',
+                                                                     'TEMP4 (K)'
                                                                      ])
+        #a note about the temperatures:
+        #TEMP1 is positioned differently than the other three sensors
+        #TEMP2,3,4 should match up well and should be used for derived measurements
     
     def get_UTC_times(self):
         """ Returns a list of datetime objects in UTC time from the\
@@ -99,16 +105,24 @@ class FlightData():
         return corrected_CO2_readings
         
     
-    #TODO: Determine which temperature sensors correspond to what temperature reading    
-    def get_temperatures(self):
-        """ Returns two lists of floats -- temperature1, temperature2 -- that\
-            correspond to readings from temperature sensors in the\
-            FlightData object 
-
+    def get_temperatures(self, inCelsius = True):
+        """ Returns a list of the average temperature readings from sensors\
+            two, three, and four in degrees celcius
         """
-        temperature1 = [float(i) for i in self.dataframe['TEMP1 (K)']]
-        temperature2 = [float(i) for i in self.dataframe['TEMP2 (K)']]
-        return temperature1, temperature2
+        temp2 = [float(i) for i in self.dataframe['TEMP2 (K)']]
+        temp3 = [float(i) for i in self.dataframe['TEMP3 (K)']]
+        temp4 = [float(i) for i in self.dataframe['TEMP4 (K)']]
+        
+        temperatures = []
+        
+        for i,j,k in zip(temp2, temp3, temp4):
+            if(inCelsius):
+                temperatures.append((i + j + k)/3 - 273.15)
+            else:
+                temperatures.append((i + j + k)/3)
+        
+        return temperatures
+        
     
     def get_pressures(self):
         """ Returns a list of floats corresponding to the pressure readings\
