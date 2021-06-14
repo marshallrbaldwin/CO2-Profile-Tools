@@ -85,6 +85,20 @@ class FlightData():
         avgCO2 = [((i+self.CO2_sensor1_offset)+(j+self.CO2_sensor2_offset))/2 for i,j in zip(CO2_ppm1, CO2_ppm2)]
         return avgCO2
     
+    def get_corrected_avgCO2(self):
+        """
+        Returns list of CO2 readings with linear pressure correction applied
+        """
+        
+        avg_CO2_readings = self.get_avgCO2_with_Offset()
+        pressures = self.get_pressures()
+        initial_pressure = pressures[0]
+        offset = avg_CO2_readings[0] - Profile.lRegression(initial_pressure, 0)
+        pivot = Profile.lRegression(initial_pressure, offset)
+        corrected_CO2_readings = [ppm + (pivot - Profile.lRegression(P, offset)) for ppm, P in zip(avg_CO2_readings, pressures)]
+        return corrected_CO2_readings
+        
+    
     #TODO: Determine which temperature sensors correspond to what temperature reading    
     def get_temperatures(self):
         """ Returns two lists of floats -- temperature1, temperature2 -- that\
@@ -525,8 +539,8 @@ class Profile():
         readings at each altitude step
         """        
         temp_at_height_stdev = self.temp_at_height_stdev[:]
-        return temp_at_height_stdev
-    
+        return temp_at_height_stdev   
+
     @staticmethod
     def lRegression(pressure, offset): #avg of the 3 linear regressions from the chamber
         """ Returns an expected CO2 reading based on the
@@ -548,9 +562,8 @@ class Profile():
         """ Returns a corrected CO2 value based on the Li
         correction
         """
-        return c * (1013*(T)/((25+273)*p))
-    
-      
+        return c * (1013*(T)/((25+273)*p))        
+
     @staticmethod
     def plot_profile(flights, profile_type = "CO2", width = 7,
                      height = 10, xlabel_size = 14, ylabel_size = 14,

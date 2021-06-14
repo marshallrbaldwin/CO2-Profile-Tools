@@ -98,12 +98,12 @@ end_times = [1,2,3,4,5]
 
 profiles = []
 
-for flightNum, start_time, end_time in zip(FlightNums, start_times, end_times):
+for flightNum, start_time, end_time in zip(flightNums, start_times, end_times):
 	
 	#create an appropriate CSV file for the flight
 	FlightData.convert_BIN_to_CSV(flightNum)
 	FlightData.generate_ALL_CSV(flightNum)
-	FlightData.trim_ALL_CSV(flightNum)
+	FlightData.trim_ALL_CSV(flightNum, start_time, end_time)
 	
 	#create new Profile object for each flight
 	profiles.append(Profile(flightNum))
