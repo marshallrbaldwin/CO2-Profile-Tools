@@ -164,10 +164,19 @@ class FlightData():
         :param int flightNum: the flight number in the BIN file.\
                               Ex) 00000004.BIN -> flightNum = 4
         """
-        ALL_dataframe = pd.DataFrame(columns = ["Timestamp", "Altitude", "Pressure",
-                                                "CO2 ppm 1", "CO2 ppm 2", "Temperature 1",
-                                                "Temperature 2", "Temperature 3",
-                                                "Temperature 4"])
+        ALL_dataframe = pd.DataFrame(columns = ["Timestamp",
+                                                "Altitude",
+                                                "Pressure",
+                                                "CO2 ppm 1",
+                                                "CO2 ppm 2",
+                                                "Temperature 1",
+                                                "Temperature 2",
+                                                "Temperature 3",
+                                                "Temperature 4",
+                                                "Humidity 1",
+                                                "Humidity 2",
+                                                "Humidity 3",
+                                                "Humidity 4"])
         
         #these will be added to the all dataframe as columns
         timestamp_list = []
@@ -177,6 +186,10 @@ class FlightData():
         temp2_list = []
         temp3_list = []
         temp4_list = []
+        hum1_list = []
+        hum2_list = []
+        hum3_list = []
+        hum4_list = []
         altitude_list = []
         pressure_list = []
         
@@ -209,6 +222,10 @@ class FlightData():
             temp2_temp = []
             temp3_temp = []
             temp4_temp = []
+            hum1_temp = []
+            hum2_temp = []
+            hum3_temp = []
+            hum4_temp = []
             
             #check whether the next timestamp is the same as the current one
             while (CO2_index + 1 < len(CO2_time) and CO2_index + 1 < ENV_DATA_SIZE):
@@ -234,7 +251,10 @@ class FlightData():
                     temp2_temp.append(RH_TEMP_dataframe["T2"][index])
                     temp3_temp.append(RH_TEMP_dataframe["T3"][index])
                     temp4_temp.append(RH_TEMP_dataframe["T4"][index])
-                    
+                    hum1_temp.append(RH_TEMP_dataframe["H1"][index])
+                    hum2_temp.append(RH_TEMP_dataframe["H2"][index])
+                    hum3_temp.append(RH_TEMP_dataframe["H3"][index])
+                    hum4_temp.append(RH_TEMP_dataframe["H4"][index])                    
                 else:
                     bad_data_counter += 1
                     
@@ -247,6 +267,10 @@ class FlightData():
                 temp2_list.append(sum(temp2_temp)/len(temp2_temp))
                 temp3_list.append(sum(temp3_temp)/len(temp3_temp))
                 temp4_list.append(sum(temp4_temp)/len(temp4_temp))
+                hum1_list.append(sum(hum1_temp)/len(hum1_temp))
+                hum2_list.append(sum(hum2_temp)/len(hum2_temp))
+                hum3_list.append(sum(hum3_temp)/len(hum3_temp))
+                hum4_list.append(sum(hum4_temp)/len(hum4_temp))
             #emptying the bin
             time_bucket = []
             
@@ -262,6 +286,10 @@ class FlightData():
         ALL_dataframe["Temperature 2"] =  temp2_list
         ALL_dataframe["Temperature 3"] = temp3_list
         ALL_dataframe["Temperature 4"] =  temp4_list
+        ALL_dataframe["Humidity 1"] = hum1_list
+        ALL_dataframe["Humidity 2"] =  hum2_list
+        ALL_dataframe["Humidity 3"] = hum3_list
+        ALL_dataframe["Humidity 4"] =  hum4_list 
         
         ALT_index = 0
         CO2_index = 0 #again, doubles for RH_TEMP index
