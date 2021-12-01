@@ -41,7 +41,11 @@ class FlightData():
                                                                      'TEMP1 (K)',
                                                                      'TEMP2 (K)',
                                                                      'TEMP3 (K)',
-                                                                     'TEMP4 (K)'
+                                                                     'TEMP4 (K)',
+                                                                     'RHUM1',
+                                                                     'RHUM2',
+                                                                     'RHUM3',
+                                                                     'RHUM4'
                                                                      ])
         #a note about the temperatures:
         #TEMP1 is positioned differently than the other three sensors
@@ -133,6 +137,18 @@ class FlightData():
         pressures = [float(i) / 100 for i in self.dataframe['Pressure (hPa)']]
         return pressures
     
+    def get_humidities(self):
+        """Returns a list of the average relative humidity readings from\
+             sensors two, three, and four"""
+    
+        rhum2 = [float(i) for i in self.dataframe['RHUM2']]
+        rhum3 = [float(i) for i in self.dataframe['RHUM3']]
+        rhum4 = [float(i) for i in self.dataframe['RHUM4']]
+        
+        rhums = [(i + j + k )/3 for i,j,k in zip(rhum2, rhum3, rhum4)]
+        
+        return rhums
+
     @staticmethod
     def convert_BIN_to_CSV(flightNum):
         """ Converts a BIN file to ALT, CO2, and RH CSV files 
@@ -393,7 +409,7 @@ class Profile():
         #assigning data lists with columns from the dataframe
         self.altitude_list = data.get_altitudes()
         self.avg_ppm_list = data.get_avgCO2_with_Offset()
-        temp1_list, temp2_list = data.get_temperatures()
+        temp_list = data.get_temperatures()
         pressure_list = data.get_pressures()
         
         #setting the start time of the flight
@@ -494,7 +510,7 @@ class Profile():
             self.avg_ppm_list = [ppm + (pivot - Profile.lRegression(pressure, offset)) for ppm, pressure in zip(self.avg_ppm_list, pressure_list)]
         
         elif(self.useLiCorrection == True):
-            self.avg_ppm_list = [Profile.li_correction(c, T, p) for c, T, p in zip(self.avg_ppm_list, temp1_list, pressure_list)]
+            self.avg_ppm_list = [Profile.li_correction(c, T, p) for c, T, p in zip(self.avg_ppm_list, temp_list, pressure_list)]
         
         ppms_at_height = {}
         temps_at_height = {}
@@ -502,7 +518,7 @@ class Profile():
             ppms_at_height[f'ppms_at{str(height)}'] = []
             temps_at_height[f'temps_at_{str(height)}'] = [] 
   
-        for ppm, altitude, temp in zip(self.avg_ppm_list, self.altitude_list, temp1_list):
+        for ppm, altitude, temp in zip(self.avg_ppm_list, self.altitude_list, temp_list):
             for height in self.heights:
                 if altitude > height-10 and altitude < height+10:
                     ppms_at_height[f'ppms_at{str(height)}'].append(ppm)
